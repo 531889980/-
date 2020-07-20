@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+
+    <style>
+        #father{
+            width: 200px;
+            height: 200px;
+            /* rgba透明底 ： 颜色透明度，只对颜色生效 */
+            background-color: rgba(255, 0, 0, 1);
+            /* opacity：元素透明度。对元素里面所有内容生效 */
+            opacity: 0.5;
+        }
+
+        #son{
+            width: 100px;
+            height: 100px;
+            background-color: green;
+        }
+    </style>
+</head>
+<body>
+    <!-- 
+        label标签for属性 指向表单的id值 : 此时点击label标签，就相当于点击了这个表单
+     -->
+    <label for="icon">
+        <img src="./upload.jpg" alt="" width="50px">
+    </label>
+
+    <input type="file" id="icon" style="display: none">
+
+    <div id="father">我是爸爸
+        <div id="son">我是儿子</div>
+    </div>
+</body>
+</html>

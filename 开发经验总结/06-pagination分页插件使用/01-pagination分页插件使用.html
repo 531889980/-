@@ -1,0 +1,74 @@
+<!--插件使用三个流程 （坤哥PS:一个插件好不好用，主要取决于插件的文档对这三个步骤写的是否详细）
+1.导包
+2.写HTML结构
+3.写js初始化
+ -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <!-- 导入bootstrap -->
+    <script src="./bootstrap/js/jquery-1.12.4.min.js"></script>
+    <script src="./bootstrap/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="./bootstrap/css/bootstrap.min.css">
+
+    <!-- 1.导包：插件 -->
+    <script src="./jquery.twbsPagination.js"></script>
+</head>
+
+<body>
+    <!-- 2.写HTML结构 -->
+    <ul id="pagination" class="pagination-sm"></ul>
+
+    <button id="btn">刷新总页数</button>
+
+    <script>
+        /* 3.js初始化 */
+        $('#pagination').twbsPagination({
+            totalPages: 20,//总页数
+            startPage: 1,//起始页
+            visiblePages: 6,//可见页数
+            first: '首页',
+            prev: '上一页',
+            next: '下一页',
+            last: '尾页',
+            onPageClick: function (event, page) {//页码点击事件
+                $('#page-content').text('Page ' + page);
+                console.log(page);//当前点击页   
+            }
+        });
+
+
+        /* 分页插件难点： 刷新总页数
+        (1)调用destroy方法，销毁旧插件：   $('#pagination').twbsPagination('destroy'); 
+        (2)重新初始化
+         */
+
+        $('#btn').click(function () {
+            var num = Math.ceil(Math.random() * 100);
+            //(1)调用destroy方法，销毁旧插件：  
+            $('#pagination').twbsPagination('destroy');
+            //(2)重新初始化
+            $('#pagination').twbsPagination({
+                totalPages: num,//总页数
+                startPage: 1,//起始页
+                visiblePages: 6,//可见页数
+                first: '首页',
+                prev: '上一页',
+                next: '下一页',
+                last: '尾页',
+                onPageClick: function (event, page) {//页码点击事件
+                    $('#page-content').text('Page ' + page);
+                    console.log(page);//当前点击页   
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <!-- 
+        需求 ：  select标签 用户看到的是文章名称， 服务器需要的是文章id
+        解决方案： 服务器需要的数据 放在value值中， 用户看到的数据 放在innerText
+
+        1. 获取select标签的value值，  不会获取自己的，而是获取里面的option标签
+
+        2. option标签 既有value，也有innerText.
+            如果两者同时存在， sel.value 优先获取value值
+            如果value不存在，  sel.value 获取innerText值
+     -->
+
+    <select name="" id="sel" value="1111">
+        <option value="1">爱生活</option>
+        <option value="2">爱美食</option>
+        <option value="3">爱代码</option>
+    </select>
+</body>
+</html>

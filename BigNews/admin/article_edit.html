@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>文章列表</title>
+    <link rel="stylesheet" href="./libs/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/iconfont.css">
+    <link rel="stylesheet" href="css/main.css">
+    <!-- jq -->
+    <script src="./libs/jquery-1.12.4.min.js"></script>
+    <!-- 模板引擎 -->
+    <script src="./libs/template-web.js"></script>
+    <!-- 导包 -->
+    <link rel="stylesheet" href="./libs/jedate/css/jeDate-test.css">
+    <link rel="stylesheet" href="./libs/jedate/css/jeDate.css">
+    <script src="./libs/jedate/js/jedate.js"></script>
+    <script src="./libs/wangEditor.min.js"></script>
+
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="common_title">
+            文章编辑
+        </div>
+        <div class="container-fluid common_con">
+            <form class="form-horizontal article_form" id="form">
+                <div class="form-group">
+                    <label for="inputTitle" class="col-sm-2 control-label">文章标题：</label>
+                    <div class="col-sm-10">
+                        <input type="text" name="title" class="form-control title" id="inputTitle" value="文章标题文字">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="inputCover" class="col-sm-2 control-label">文章封面：</label>
+                    <div class="col-sm-10">
+                        <img src="images/pic06.jpg" class="article_cover">
+                        <input name="cover" type="file" id="inputCover">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="inputCategory" class="col-sm-2 control-label">文章类别：</label>
+                    <div class="col-sm-4">
+                        <select class="form-control category" name="categoryId">
+                            <option>类别一</option>
+                            <option>类别二</option>
+                            <option>类别三</option>
+                            <option selected>类别四</option>
+                            <option>类别五</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">发布时间：</label>
+                    <div class="col-sm-4">
+                        <!-- 日期插件 -->
+                        <div class="jeinpbox">
+                            <input type="text" class="jeinput" id="testico" placeholder="YYYY-MM-DD">
+                            <div class="icons jebtns" onclick="jeDate('#testico',{trigger:false,format: 'YYYY-MM-DD',zIndex:10001})">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="inputEmail3" class="col-sm-2 control-label">文章内容：</label>
+                    <div class="col-sm-10">
+                        <!-- 编辑器插件 -->
+                        <div id="editor"></div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button type="submit" class="btn btn-success btn-edit">修改</button>
+                        <button type="submit" class="btn btn-default btn-draft">存为草稿</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 文章分类模板 -->
+    <script id="art_list" type="text/html">
+        {{ each data v }}
+        <option value="{{ v.id }}">{{ v.name }}</option>
+        {{ /each }}
+    </script>
+
+    <script src="./libs/http.js"></script>
+    <script>
+        //入口函数
+        $(function () {
+            /* 日期插件和编辑器插件初始化 */
+            jeDate("#testico", {
+                isinitVal: true,//默认显示当前时间
+                festival: true,//显示节假日
+                trigger: 'click',
+                format: "YYYY-MM-DD",
+                minDate: "2014-09-19 00:00:00",
+                zIndex:10001,//设置日期插件层级高于编辑器层级
+            });
+
+            var E = window.wangEditor;
+            var editor = new E('#editor');
+            // 或者 var editor = new E( document.getElementById('editor') )
+            editor.create();
+
+            /* 
+            1.发现问题： 日期插件  被 编辑器插件给遮挡
+            2.分析问题： 日期插件层级  小于  编辑器插件层级
+            3.解决问题： 设置日期插件层级  高于 编辑器插件层级
+            */
+
+            /* 编辑文章页面开发思路
+            0. 先完成日期选择插件jedate 和 文本编辑器插件wangEditor的布局和配置
+
+            1.获取从article_list页面传递过来的文章id
+            2.ajax请求文章所有的分类 (渲染分类下拉菜单)
+            3.ajax请求文章详细信息 （渲染整个页面）
+            4.文件预览
+            5.文件上传 
+            */
+
+            //1.获取从article_list页面传递过来的文章id
+            var id = window.location.href.split('=')[1];
+            console.log(id);
+            
+            //2.ajax请求文章所有的分类 (渲染分类下拉菜单)
+            $.ajax({
+                url:BigNew.category_list,
+                type:'get',
+                dataType:'json',
+                success: function(backData){
+                    console.log(backData);
+                    //模板引擎渲染
+                    $('.category').html( template('art_list',backData) );
+                    
+                }
+            });
+
+            //3.ajax请求文章详细信息 （渲染整个页面）
+            $.ajax({
+                url:BigNew.article_search,
+                type:'get',
+                dataType:'json',
+                data:{ id:id },
+                success: function(backData){
+                    console.log(backData);
+                    //渲染页面
+                    $('.title').val( backData.data.title );
+                    $('.article_cover').attr('src',backData.data.cover);
+                    $('.category').val( backData.data.categoryId );
+                    $('#testico').val( backData.data.date );
+                    editor.txt.html( backData.data.content );
+                }
+            });
+            //4.文件预览
+            //1.给file表单元素注册onchange事件
+            $('#inputCover').change(function () {
+                //1.2 获取用户选择的图片
+                var file = this.files[0];
+                //1.3 将文件转为src路径
+                var url = URL.createObjectURL(file);
+                //1.4 将url路径赋值给img标签的src
+                $('.article_cover').attr('src', url);
+            });
+
+            //5.文件上传 
+            $('.btn-edit,.btn-draft').on('click',function(e){
+                //(1)获取文章状态
+                var state = $(this).hasClass('btn-edit') ? '已发布' : '草稿';
+                console.log(state);
+                //(2)禁用表单默认提交事件
+                e.preventDefault();
+                //(3)创建FormData对象：参数是表单dom对象
+                var fd = new FormData($('form')[0]);
+                /* 
+                1.发现问题 ： 参数数量缺失
+                2.分析问题： formdata只能获取表单中有name属性的元素的值
+                3.解决问题： 当 formdata参数 < 接口参数  使用append()手动追加
+                */
+                fd.append('id',id);
+                fd.append('date',$('#testico').val() );
+                fd.append('content', editor.txt.html() );
+                fd.append('state', state );
+
+                $.ajax({
+                    url:BigNew.article_edit,
+                    type:'post',
+                    dataType:'json',
+                    data:fd,
+                    contentType: false,
+                    processData: false,
+                    success: function(backData){
+                        console.log(backData);
+                        if(backData.code == 200){
+                            alert('编辑成功');
+                            //返回文章列表页
+                            // window.location.href = './article_list.html';//跳转会刷新
+                            // window.history.back();//回退不会刷新
+                        }
+                        
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

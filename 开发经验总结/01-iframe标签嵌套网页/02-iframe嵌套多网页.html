@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        iframe{
+            /* iframe默认是行内块，水平居中可以转块级元素 */
+            display: block;
+            width: 800px;
+            height: 600px;
+            margin: 50px auto;
+        }
+    </style>
+</head>
+<body>
+    <!--iframe标签嵌套多页面的原理： 利用a标签的target属性 
+        原理： 利用a标签的target属性设置为iframe的name，就可以在iframe中打开a标签的链接
+
+        1. 设置iframe标签的name属性
+        2. 设置a标签的target属性为iframe的name属性值
+    -->
+    <a href="./index1.html" target="myframe">页面1</a>
+    <a href="./index2.html" target="myframe">页面2</a>
+    <a href="./index3.html" target="myframe">页面3</a>
+
+    <!-- 嵌套网页 -->
+    <iframe src="./index1.html" frameborder="0" name="myframe"></iframe>
+
+    <script src="./jquery-1.12.4.min.js"></script>
+
+    <script>
+        //注册事件
+        $('a').click(function(){
+            $(this).css('border','5px solid red');
+        });
+
+
+        //1.jq主动触发事件 : 只能触发注册事件
+        // $('a').eq(2).click();
+
+        //2. DOM对象也有原生的click : 触发注册事件  + 默认事件
+        $('a')[2].click();
+
+        /*jq对象click方法  与  DOM原生对象 click方法区别 
+        jq对象click : (1)触发注册事件
+        原生DOM对象click: (1)触发注册事件  (2)触发默认事件
+        */
+    </script>
+</body>
+</html>

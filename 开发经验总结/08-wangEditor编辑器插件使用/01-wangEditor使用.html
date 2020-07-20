@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <!-- 1.导包 -->
+    <!-- 注意， 只需要引用 JS，无需引用任何 CSS ！！！-->
+    <script type="text/javascript" src="./wangEditor.min.js"></script>
+</head>
+
+<body>
+    <!-- 2.写HTML结构 -->
+    <div id="editor"></div>
+    <br>
+    <button id="btn1">设置内容</button>
+    <button id="btn2">获取内容</button>
+    <script>
+        /* 3.js初始化 */
+        var E = window.wangEditor;
+        var editor = new E('#editor')
+        // 或者 var editor = new E( document.getElementById('editor') )
+        editor.create()
+
+
+        //设置内容
+        document.querySelector('#btn1').onclick = function () {
+            editor.txt.html('<p>用 JS 设置的内容</p>')
+        };
+        //获取内容
+        document.querySelector('#btn2').onclick = function () {
+            console.log(  editor.txt.html()  );
+            
+        };
+    </script>
+</body>
+
+</html>

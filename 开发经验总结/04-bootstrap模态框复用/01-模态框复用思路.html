@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <!-- 导入bootstrap:三个文件 -->
+    <script src="./bootstrap/js/jquery-1.12.4.min.js"></script>
+    <script src="./bootstrap/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="./bootstrap/css/bootstrap.min.css">
+
+    <style>
+        .btn-pink {
+            color: #fff;
+            background-color: pink;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- 模态框 -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="exampleModalLabel">文章分类</h4>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="recipient-name" class="control-label">分类名称:</label>
+                            <input type="text" class="form-control" id="recipient-name">
+                        </div>
+                        <div class="form-group">
+                            <label for="message-text" class="control-label">分类别名:</label>
+                            <input class="form-control" id="message-text">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default btn-cancel" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-info btn-confirm" >确认</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <a href="javascript:;" data-toggle="modal" data-target="#myModal" class="btn btn-success">新增分类</a>
+    <a href="javascript:;" data-toggle="modal" data-target="#myModal" class="btn btn-pink">编辑</a>
+
+    <script>
+        /*新增与编辑难点分析
+        1. 新增与编辑弹出同一个模态框，需要模态框复用
+        2. 点击新增 和 编辑 业务逻辑不同
+            新增
+                (1)模态框表单清空
+                (2)模态框显示新增按钮
+                (3)新增ajax : /admin/category/add   参数：name ， slug
+            编辑
+                (1)模态框显示当前编辑的分类信息: 传值
+                (2)模态框显示编辑按钮
+                (3)编辑ajax: /admin/category/edit   参数：id， name ,slug
+        */
+
+        /*难点解决方案
+        1. 模态框复用 ： 给按钮设置自定义属性  data-toggle="modal" data-target="#myModal"
+        2. 点击新增 和 编辑 业务逻辑不同
+            2.1 在模态框弹出事件中，通过获取e.relatedTarget  就可以知道用户点击哪一个按钮弹出模态框
+            2.2 新增
+                (1)修改模态框右下角文本：新增
+            2.3 编辑
+                (2)修改模态框右下角文本：编辑
+        
+        3.模态框右下角两个事件，处理也不同
+            点击取消：  清空模态框表单
+            点击确认：
+                确认按钮 显示新增： 执行新增ajax
+                确认按钮 显示编辑： 执行编辑ajax
+         */
+
+        //模态框弹出事件
+        $('#myModal').on('show.bs.modal', function (e) {
+            // console.log('弹出模态框');
+            //获取弹出这个模态框的事件触发源
+            console.log(e.relatedTarget);//DOM对象
+            if ($(e.relatedTarget).text() == '新增分类') {
+                // alert('点击的新增按钮弹出模态框');
+                //显示新增
+                $('.btn-confirm').text('新增');
+            } else {
+                // alert('点击的编辑按钮弹出模态框');
+                //显示新增
+                $('.btn-confirm').text('编辑');
+            }
+        });
+
+
+        //取消 : 模态框表单清空
+        $('.btn-cancel').click(function () {
+            //表单重置DOM原生方法：  reset()
+            $('.modal-body>form')[0].reset();
+
+        });
+
+
+        //确认：  新增：新增ajax   编辑：编辑ajax
+        $('.btn-confirm').click(function () {
+            //this : 事件源  模态框右下角确认按钮
+            if( $(this).text() == '新增' ){
+                alert('执行新增ajax');
+            }else{
+                alert('执行编辑ajax');
+            };
+
+            //手动隐藏模态框
+            $('#myModal').modal('hide');
+        });
+    </script>
+</body>
+
+</html>
